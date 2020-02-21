@@ -55,6 +55,7 @@ def mover(player, graph):
             # - update the paths with this direction
             current_path.append(choice)
             back_path.append(opposite)
+            print(f"back_path {back_path}")
             # - use player.travel(direction) to move the player in that direction
             player.prev_room = player.current_room
             player.travel(choice)
@@ -73,6 +74,11 @@ def mover(player, graph):
             
         else:
             print("move backwards now")
+            print(back_path)
+            back_up = back_path.pop()
+            player.travel(back_up)
+            current_path.append(back_up)
+
     print(current_path)
     return current_path
 
