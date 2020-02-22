@@ -1,10 +1,7 @@
 from util import Stack, Queue
 import random 
 
-#How to backtrack? 
-#*** insert this in the loop above so that when it backtracks it finished undiscovered paths in the previous room ***
-
-# Create an opposite path
+# Create an opposite path by switching directions
 def turn(direction):
     if direction == "n":
         return "s"
@@ -14,9 +11,6 @@ def turn(direction):
         return "w"
     elif direction == "w":
         return "e"
-# add the opposite direction to each path
-# Want to only backtrack if there there are no paths to explore in the current room
-    # use player.travel(backtrack) to move the playe back a room
 
 def mover(player, graph):
     # track visited
@@ -31,33 +25,44 @@ def mover(player, graph):
    
     # initialize the undiscovered rooms dictionary with the starting_room, exits, and "?" for values
     exits = player.current_room.get_exits()
-        # {0:{"n": "?", "s": "?", "e": "?", "w": "?" }}
+    # {0:{"n": "?", "s": "?", "e": "?", "w": "?" }}
     undiscovered[player.current_room.id] = {key: "?" for key in exits}
     visited.add(player.current_room)
-    print(undiscovered)
-    # Check room to see if there are any undiscovered rooms (if "?" in undiscovered[player.current_room.id].values())
-    # while visited is less than the length of the graph.
 
 
+    print(f"Initial Undiscovered: {undiscovered}.\nNothing before this is repeated.\n")
+
+
+    # Check if all rooms have been visited
+    # while the length of visited is less than the length of the graph...
     while len(visited) < len(graph):
-        # IF their are undiscovered rooms
-        print("looping")
+        print("All rooms have not been visited yet")
+
+        # Check room to see if there are any undiscovered rooms
+        # If their are undiscovered rooms (then go down that path)
         if "?" in undiscovered[player.current_room.id].values():
             # move the player through the rooms by...
+
             # - picking a directions from the current room's keys that have a value of "?"
             directions = undiscovered[player.current_room.id].keys() # gives me back a list
             unknown_room = []
+
             for key in directions:
                 if undiscovered[player.current_room.id][key] == "?":
                     unknown_room.append(key)
+
+            # pick a random choice from unknown_room
             choice = random.choice(unknown_room)
-            opposite = turn(choice)
-            # - update the paths with this direction
+            # update the paths with this direction
             current_path.append(choice)
+
+            opposite = turn(choice)
             back_path.append(opposite)
             print(f"back_path {back_path}")
             # - use player.travel(direction) to move the player in that direction
             player.prev_room = player.current_room
+
+            #travel to next room
             player.travel(choice)
             print(player.current_room)
             # update the undiscovered dictionary to add the new current_room
@@ -71,15 +76,38 @@ def mover(player, graph):
             undiscovered[player.current_room.id][opposite] = player.prev_room.id
             # Then do it again/loop with the current room
             print(undiscovered)
-            
+
+        # if there are no undiscovered room (than backtrack)
         else:
-            print("move backwards now")
-            print(back_path)
+            print(f"Moving Backwards now\n{back_path}\n")
+
+            qq = Queue()
+            qq.enqueue([player.current_room])
+            while qq.len() > 0:
+                short_path = qq.dequeue()
+                print(f"sp {short_path}")
+                rr = short_path[-1]
+                if "?" in undiscovered[rr.id].values():
+                    print(rr.id)
+                    return rr.id
+                else:
+                    visited.add(rr)
+
+                    for ee in player.current_room.get_exits():
+                        new_path = short_path.copy()
+                        new_path.append(ee)
+                        qq.enqueue(new_path)
+
+            print(short_path)
             back_up = back_path.pop()
+            # back_up = short_path
             player.travel(back_up)
             current_path.append(back_up)
 
+
+
     print(current_path)
+    # After all room have been visited at least once return the current_path
     return current_path
 
 
