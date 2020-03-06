@@ -12,9 +12,9 @@ world = World()
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
-map_file = "maps/test_loop.txt"
+# map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -30,9 +30,10 @@ player = Player(world.starting_room)
 traversal_path = []
 
 # Run an algorithm to traverse the world and return a path that visits each room at least once
-print("Running Mover")
+print("Starting Traversal...\n")
 updated_path = mover(player, room_graph)
-print("Updating Traversal Path")
+
+print("Updating Traversal Path...\n")
 traversal_path.extend(updated_path)
 
 # TRAVERSAL TEST
