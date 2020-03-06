@@ -4,7 +4,7 @@ from world import World
 
 import random
 from ast import literal_eval
-
+from mover import mover
 # Load world
 world = World()
 
@@ -29,7 +29,12 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+# Run an algorithm to traverse the world and return a path that visits each room at least once
+print("Starting Traversal...\n")
+updated_path = mover(player, room_graph)
 
+print("Updating Traversal Path...\n")
+traversal_path.extend(updated_path)
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -51,12 +56,12 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")
